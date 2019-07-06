@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+    <http:listener-config name="records-api-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8081" />
+    </http:listener-config>
+    <apikit:config name="records-api-config" raml="records-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <db:config name="Database_Config" doc:name="Database Config" doc:id="2875401d-729f-44b5-bda5-a9527aa64e29" >
+		<db:my-sql-connection host="sandeep119629.ckdony16ozs8.us-east-1.rds.amazonaws.com" port="3306" user="masteruser" password="masterpassword" database="customers" />
+	</db:config>
+	<flow name="records-api-main">
+        <http:listener config-ref="records-api-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="records-api-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:BAD_REQUEST">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Bad request"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">400</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Method not allowed"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">405</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not acceptable"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">406</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Unsupported media type"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">415</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not Implemented"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">501</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="records-api-console">
+        <http:listener config-ref="records-api-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="records-api-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="put:\records\customers\(id):application\json:records-api-config">
+        <http:listener doc:name="Put customer listener" doc:id="374e8967-9743-4f91-b75f-5263e956cfa4" config-ref="records-api-httpListenerConfig" path="/records/customers/{id}" allowedMethods="PUT"/>
+		<set-variable value="#[payload.firstName]" doc:name="firstName" doc:id="03effaa9-342e-4d7e-bf60-b9478380d6cf" variableName="firstName" />
+		<set-variable value="#[payload.address]" doc:name="address" doc:id="384b8dc8-e1c3-4d32-ace3-18a25445b497" variableName="address" />
+		<set-variable value="#[payload.lastName]" doc:name="lastName" doc:id="46a16604-99f0-45a6-99c8-2922198153ec" variableName="lastName" />
+        <set-variable value="#[attributes.uriParams.id]" doc:name="id" doc:id="f136ab0e-12bd-4a3f-b14c-ec7fbab3dade" variableName="id"/>
+		<db:update doc:name="Update customer" doc:id="350dfab0-013a-4970-8c05-3e1bcca3fea9" config-ref="Database_Config">
+			<db:sql >update customer_table set first_name = :firstName, last_name=:lastName, address = :address where customer_id=:id;</db:sql>
+			<db:input-parameters ><![CDATA[#[{'firstName' : vars.firstName, 'lastName' : vars.lastName, 'address' : vars.address, 'id' : vars.id}]]]></db:input-parameters>
+		</db:update>
+		<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="f7cacb3b-8506-4aea-b14d-33c59cae43d7">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	firstName: vars.firstName,
+	lastName: vars.lastName,
+	address: vars.address,
+	id: vars.id
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="delete:\records\customers\(id):records-api-config">
+        <http:listener doc:name="Delete Customer Listener" doc:id="8912ff86-b970-455a-ad0f-036497a01d19" config-ref="records-api-httpListenerConfig" path="/records/customers/{id}" allowedMethods="DELETE"/>
+		<db:delete doc:name="Delete customer" doc:id="07653027-238d-4b30-901f-1380447fbb8c" config-ref="Database_Config">
+			<db:sql >delete from customer_table where customer_id=:id</db:sql>
+			<db:input-parameters ><![CDATA[#[{'id' : attributes.uriParams.id}]]]></db:input-parameters>
+		</db:delete>
+		<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="53768f56-b93c-4a20-b931-02505a0325ea">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="get:\records\customers:records-api-config">
+        <http:listener doc:name="Get Customer Listener" doc:id="5880f255-2683-4f7b-b68a-aef49418cc19" config-ref="records-api-httpListenerConfig" path="/records/customers" allowedMethods="GET"/>
+		<db:select doc:name="Select all customers" doc:id="6033ad15-9203-4424-8b98-6644691741ce" config-ref="Database_Config">
+			<db:sql >select * from customer_table</db:sql>
+		</db:select>
+		<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="928d4f7d-b731-407b-bb20-899681e7ddd0">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	firstName: payload01.first_name,
+	lastName: payload01.last_name,
+	address: payload01.address,
+	id: payload01.customer_id as String
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="get:\records\customers\(id):records-api-config">
+        <http:listener doc:name="Get Flight By Id Listener" doc:id="138a3942-9939-4660-a4a1-e1d0c4f855f4" config-ref="records-api-httpListenerConfig" path="/records/customers/{id}" allowedMethods="GET"/>
+		<db:select doc:name="Select customer by id" doc:id="4a5411d6-d42e-4de9-8e47-c3838c43e367" config-ref="Database_Config">
+			<db:sql >select * from customer_table where customer_id=:id</db:sql>
+			<db:input-parameters ><![CDATA[#[{'id' : attributes.uriParams.id}]]]></db:input-parameters>
+		</db:select>
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="d0cda62c-8ebe-42d3-8dab-3ed8279e7e8b">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	firstName: payload[0].first_name,
+	lastName: payload[0].last_name,
+	address: payload[0].address,
+	id: payload[0].customer_id as String
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="post:\records\customers:application\json:records-api-config">
+        <http:listener doc:name="Post customer listener" doc:id="0628748c-ffaa-4628-b55d-c069883f0209" config-ref="records-api-httpListenerConfig" path="/records/customers" allowedMethods="POST"/>
+		<set-variable value="#[payload.firstName]" doc:name="firstName" doc:id="ab57136b-ef54-4412-a42e-eda91eafe222" variableName="firstName"/>
+		<set-variable value="#[payload.address]" doc:name="address" doc:id="8b2b2900-b4c4-4a92-b388-d7865c01d163" variableName="address"/>
+		<set-variable value="#[payload.lastName]" doc:name="lastName" doc:id="38e918e8-2f5f-4618-81ab-35a7f1ffcd4a" variableName="lastName"/>
+		<db:insert doc:name="Insert customer" doc:id="8217684d-d711-4d01-afd5-6a406e33c601" config-ref="Database_Config">
+			<db:sql >INSERT INTO customer_table (first_name, last_name, address) VALUES (:firstName, :lastName, :address); </db:sql>
+			<db:input-parameters ><![CDATA[#[{'firstName' : vars.firstName, 'lastName' : vars.lastName, 'address' : vars.address}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="0db19b40-7e3a-4d37-9d75-9a6590067a62">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	id: payload.generatedKeys as String default "",
+	firstName: vars.firstName,
+	lastName: vars.lastName,
+	address: vars.address
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+</mule>

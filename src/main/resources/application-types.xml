@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="lastName" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: string]]></types:shape>
+    </types:type>
+    <types:type name="firstName" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: string]]></types:shape>
+    </types:type>
+    <types:type name="address" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: string]]></types:shape>
+    </types:type>
+    <types:type name="id" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: string]]></types:shape>
+    </types:type>
+    <types:type name="customer" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+
+type: object
+properties: 
+  id: 
+    type: string
+    required: true
+  firstName: 
+    type: string
+    required: true
+  lastName: 
+    type: string
+    required: true
+  address:
+    type: string
+    required: false]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#f7cacb3b-8506-4aea-b14d-33c59cae43d7">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:variables>
+          <types:variable name="lastName" type="lastName"/>
+          <types:variable name="firstName" type="firstName"/>
+          <types:variable name="address" type="address"/>
+          <types:variable name="id" type="id"/>
+        </types:variables>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#0db19b40-7e3a-4d37-9d75-9a6590067a62">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:variables>
+          <types:variable name="lastName" type="lastName"/>
+          <types:variable name="firstName" type="firstName"/>
+          <types:variable name="address" type="address"/>
+        </types:variables>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>
