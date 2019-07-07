@@ -127,7 +127,9 @@ output application/json
         </error-handler>
     </flow>
     <flow name="put:\customers\(id):application\json:customer-management-api-config">
-        <http:listener doc:name="Put customer listener" doc:id="6bd408d8-0df1-45cb-b9a2-df03c31b11eb" config-ref="customer-management-api-httpListenerConfig" path="/customers/{id}"/>
+        <http:listener doc:name="Put customer listener" doc:id="6bd408d8-0df1-45cb-b9a2-df03c31b11eb" config-ref="customer-management-api-httpListenerConfig" path="/customers/{id}">
+			<http:response statusCode="200" />
+		</http:listener>
         <set-variable value="#[attributes.uriParams.id]" doc:name="id" doc:id="d056a603-04f6-4795-a949-5362c35b021e" variableName="id"/>
 		<http:request method="PUT" doc:name="Update customer request" doc:id="633e709c-4f86-48f1-8239-729a31c56457" config-ref="HTTP_Request_configuration" path="/customers/{id}">
 			<http:uri-params ><![CDATA[#[output application/java
@@ -146,7 +148,9 @@ payload]]></ee:set-payload>
         </ee:transform>
     </flow>
     <flow name="delete:\customers\(id):customer-management-api-config">
-        <http:listener doc:name="Delete Customer Listener" doc:id="3f072414-3d47-4605-9861-ef4059ae6e21" config-ref="customer-management-api-httpListenerConfig" path="/customers/{id}" allowedMethods="DELETE"/>
+        <http:listener doc:name="Delete Customer Listener" doc:id="3f072414-3d47-4605-9861-ef4059ae6e21" config-ref="customer-management-api-httpListenerConfig" path="/customers/{id}" allowedMethods="DELETE">
+			<http:response statusCode="204" />
+		</http:listener>
 		<set-variable value="#[attributes.uriParams.id]" doc:name="id" doc:id="925dccf1-996a-4305-bdda-ab7f7d5cd139" variableName="id"/>
 		<http:request method="DELETE" doc:name="Delete customer request" doc:id="cd090b65-f5ba-4e08-b7d1-8381c29e14fd" config-ref="HTTP_Request_configuration" path="customers/{id}">
 			<http:uri-params ><![CDATA[#[output application/java
@@ -165,7 +169,9 @@ payload]]></ee:set-payload>
         </ee:transform>
     </flow>
 	<flow name="get:\customers:customer-management-api-config">
-        <http:listener doc:name="Get Customer Listener" doc:id="f9c7d8bd-bde1-4873-be5d-4df6add1564c" config-ref="customer-management-api-httpListenerConfig" path="/customers"/>
+        <http:listener doc:name="Get Customer Listener" doc:id="f9c7d8bd-bde1-4873-be5d-4df6add1564c" config-ref="customer-management-api-httpListenerConfig" path="/customers">
+			<http:response statusCode="200" />
+		</http:listener>
 		<http:request method="GET" doc:name="Get Customer Request" doc:id="a1d5cee9-047f-4c06-9f40-ae4867eea289" config-ref="HTTP_Request_configuration" path="/customers"/>
 		<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="fa7a1670-a4bb-4734-a53f-944d7e0012a7">
             <ee:message>
@@ -182,7 +188,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
         </ee:transform>
     </flow>
     <flow name="get:\customers\(id):customer-management-api-config">
-        <http:listener doc:name="Listener" doc:id="636de78c-aa31-4541-932e-525201f8f829" config-ref="customer-management-api-httpListenerConfig" path="/customers/{id}" allowedMethods="GET"/>
+        <http:listener doc:name="Listener" doc:id="636de78c-aa31-4541-932e-525201f8f829" config-ref="customer-management-api-httpListenerConfig" path="/customers/{id}" allowedMethods="GET">
+			<http:response statusCode="200" />
+		</http:listener>
 		<set-variable value="#[attributes.uriParams.id]" doc:name="id" doc:id="fb1f5a2a-dff3-458e-9f2b-894dbfebd740" variableName="id"/>
 		<http:request method="GET" doc:name="Get Customer by Id Request" doc:id="a954eebf-52ee-484d-894f-a4c7d93589a0" config-ref="HTTP_Request_configuration" path="customers/{id}">
 			<http:uri-params ><![CDATA[#[output application/java
@@ -206,7 +214,9 @@ output application/json
         </ee:transform>
     </flow>
     <flow name="post:\customers:application\json:customer-management-api-config">
-        <http:listener doc:name="Post customer listener" doc:id="16ff0007-8937-4a06-93be-af49b7466897" config-ref="customer-management-api-httpListenerConfig" path="/customers" allowedMethods="POST"/>
+        <http:listener doc:name="Post customer listener" doc:id="16ff0007-8937-4a06-93be-af49b7466897" config-ref="customer-management-api-httpListenerConfig" path="/customers" allowedMethods="POST">
+			<http:response statusCode="201" />
+		</http:listener>
 		<http:request method="POST" doc:name="Post Customer Request" doc:id="131d47f3-0389-4bd8-8cbf-7ba7bd82461b" config-ref="HTTP_Request_configuration" path="customers"/>
 		<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="5af8791c-1c27-426d-8dd8-4c228c836f34">
             <ee:message>

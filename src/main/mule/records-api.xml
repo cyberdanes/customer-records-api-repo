@@ -127,7 +127,9 @@ output application/json
         </error-handler>
     </flow>
     <flow name="put:\records\customers\(id):application\json:records-api-config">
-        <http:listener doc:name="Put customer listener" doc:id="374e8967-9743-4f91-b75f-5263e956cfa4" config-ref="records-api-httpListenerConfig" path="/records/customers/{id}" allowedMethods="PUT"/>
+        <http:listener doc:name="Put customer listener" doc:id="374e8967-9743-4f91-b75f-5263e956cfa4" config-ref="records-api-httpListenerConfig" path="/records/customers/{id}" allowedMethods="PUT">
+			<http:response statusCode="200" />
+		</http:listener>
 		<set-variable value="#[payload.firstName]" doc:name="firstName" doc:id="03effaa9-342e-4d7e-bf60-b9478380d6cf" variableName="firstName" />
 		<set-variable value="#[payload.address]" doc:name="address" doc:id="384b8dc8-e1c3-4d32-ace3-18a25445b497" variableName="address" />
 		<set-variable value="#[payload.lastName]" doc:name="lastName" doc:id="46a16604-99f0-45a6-99c8-2922198153ec" variableName="lastName" />
@@ -151,7 +153,9 @@ output application/json
         </ee:transform>
     </flow>
     <flow name="delete:\records\customers\(id):records-api-config">
-        <http:listener doc:name="Delete Customer Listener" doc:id="8912ff86-b970-455a-ad0f-036497a01d19" config-ref="records-api-httpListenerConfig" path="/records/customers/{id}" allowedMethods="DELETE"/>
+        <http:listener doc:name="Delete Customer Listener" doc:id="8912ff86-b970-455a-ad0f-036497a01d19" config-ref="records-api-httpListenerConfig" path="/records/customers/{id}" allowedMethods="DELETE">
+			<http:response statusCode="204" />
+		</http:listener>
 		<db:delete doc:name="Delete customer" doc:id="07653027-238d-4b30-901f-1380447fbb8c" config-ref="Database_Config">
 			<db:sql >delete from customer_table where customer_id=:id</db:sql>
 			<db:input-parameters ><![CDATA[#[{'id' : attributes.uriParams.id}]]]></db:input-parameters>
@@ -166,7 +170,9 @@ payload]]></ee:set-payload>
         </ee:transform>
     </flow>
     <flow name="get:\records\customers:records-api-config">
-        <http:listener doc:name="Get Customer Listener" doc:id="5880f255-2683-4f7b-b68a-aef49418cc19" config-ref="records-api-httpListenerConfig" path="/records/customers" allowedMethods="GET"/>
+        <http:listener doc:name="Get Customer Listener" doc:id="5880f255-2683-4f7b-b68a-aef49418cc19" config-ref="records-api-httpListenerConfig" path="/records/customers" allowedMethods="GET">
+			<http:response statusCode="200" />
+		</http:listener>
 		<db:select doc:name="Select all customers" doc:id="6033ad15-9203-4424-8b98-6644691741ce" config-ref="Database_Config">
 			<db:sql >select * from customer_table</db:sql>
 		</db:select>
@@ -185,7 +191,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
         </ee:transform>
     </flow>
     <flow name="get:\records\customers\(id):records-api-config">
-        <http:listener doc:name="Get Flight By Id Listener" doc:id="138a3942-9939-4660-a4a1-e1d0c4f855f4" config-ref="records-api-httpListenerConfig" path="/records/customers/{id}" allowedMethods="GET"/>
+        <http:listener doc:name="Get Flight By Id Listener" doc:id="138a3942-9939-4660-a4a1-e1d0c4f855f4" config-ref="records-api-httpListenerConfig" path="/records/customers/{id}" allowedMethods="GET">
+			<http:response statusCode="200" />
+		</http:listener>
 		<db:select doc:name="Select customer by id" doc:id="4a5411d6-d42e-4de9-8e47-c3838c43e367" config-ref="Database_Config">
 			<db:sql >select * from customer_table where customer_id=:id</db:sql>
 			<db:input-parameters ><![CDATA[#[{'id' : attributes.uriParams.id}]]]></db:input-parameters>
@@ -205,7 +213,9 @@ output application/json
         </ee:transform>
     </flow>
     <flow name="post:\records\customers:application\json:records-api-config">
-        <http:listener doc:name="Post customer listener" doc:id="0628748c-ffaa-4628-b55d-c069883f0209" config-ref="records-api-httpListenerConfig" path="/records/customers" allowedMethods="POST"/>
+        <http:listener doc:name="Post customer listener" doc:id="0628748c-ffaa-4628-b55d-c069883f0209" config-ref="records-api-httpListenerConfig" path="/records/customers" allowedMethods="POST">
+			<http:response statusCode="201" />
+		</http:listener>
 		<set-variable value="#[payload.firstName]" doc:name="firstName" doc:id="ab57136b-ef54-4412-a42e-eda91eafe222" variableName="firstName"/>
 		<set-variable value="#[payload.address]" doc:name="address" doc:id="8b2b2900-b4c4-4a92-b388-d7865c01d163" variableName="address"/>
 		<set-variable value="#[payload.lastName]" doc:name="lastName" doc:id="38e918e8-2f5f-4618-81ab-35a7f1ffcd4a" variableName="lastName"/>
