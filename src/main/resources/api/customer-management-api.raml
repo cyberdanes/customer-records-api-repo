@@ -1,0 +1,148 @@
+#%RAML 1.0
+title: Customer Management API
+baseUri: https://anypoint.mulesoft.com/mocking/api/v1/links/e3d594b5-ced8-4ee2-9294-8d092acc9284/api # baseUri: 
+#baseUri: http://localhost:8081/api
+version: v1
+protocols: [ HTTP, HTTPS ] 
+mediaType: [ application/json ]
+description: Process API for managing customers. Provides functionality for creation, maintenance and deletion of customers.
+securitySchemes:
+  basic:
+    description: Basic API authentication.
+    type: Basic Authentication
+
+traits:
+  noCache:
+    headers:
+      Cache-Control:
+        type: string
+        default: no-cache
+  isSecure:
+    securedBy: [ basic ]
+
+types:
+  Customer: !include datatypes/customer.raml
+  CustomerNoId: !include datatypes/customerNoId.raml
+
+/customers:
+  description: The entry point for calls related to customer records.
+  get:
+    description: Retrieves all customers records present in the system.
+    is:
+      - noCache
+      - isSecure
+    headers:
+      Client-ID:
+        description: Identifier of the client invoking the API.
+        
+    responses:
+      200:
+        description: Returns an array of customer objects in JSON.
+        body:
+          application/json:
+            type: Customer[]
+            example:  !include examples/customersExample.raml
+
+      400:
+        body:
+          application/json:
+            example: {
+              "message": "Error retrieving data from the customer database."
+            }
+  
+  post:
+    description: Creates new customers from the customer object in request.
+    is:
+      - noCache
+      - isSecure
+    headers:
+        Client-ID:
+          description: Identifier of the client invoking the API.
+          required: true
+    body:
+      application/json:
+        description: Payload should be a customer object with all fields present.
+        type: CustomerNoId
+        example: !include examples/customerExampleNoId.raml
+    responses:
+      201:
+        description: Customer object created successfully.
+        body:
+          application/json:
+            example: !include examples/customerExample.raml
+      400:
+        body:
+          application/json:
+            example: {
+              "message": "Error creating customer. Please check the request and make sure it is valid."
+            }
+
+  /{id}:
+    get:
+      is:
+        - noCache
+        - isSecure
+      headers:
+        Client-ID:
+          description: Identifier of the client invoking the API.
+          required: true
+      description: Retrieve a customer by the customer id
+      responses:
+        200:
+          body:
+            application/json:
+              type: Customer
+              example: !include examples/customerExample.raml
+        404:
+          body:
+            application/json:
+              example: {
+              "message": "Error occured. Customer not found."
+            }
+    put:
+      is:
+        - noCache
+        - isSecure
+      headers:
+        Client-ID:
+          description: Identifier of the client invoking the API.
+          required: true
+      description: Update a customer by id
+      body:
+        application/json:
+          type: Customer
+          example: !include examples/customerExample.raml
+      responses:
+        200:
+          body:
+            application/json:
+              type: Customer
+              example: !include examples/customerExample.raml
+        404:
+          body:
+            application/json:
+              example: {
+              "message": "Error occured. Customer not found."
+            }
+    delete:
+      is:
+        - noCache
+        - isSecure
+      headers:
+        Client-ID:
+          description: Identifier of the client invoking the API.
+          required: true
+      description: Delete a customer by id
+      responses:
+        204:
+          description: Deleted successfully
+          body:
+            application/json:
+              example: !include examples/customerExample.raml
+                
+        404:
+          body:
+            application/json:
+              example: {
+              "message": "Error occured. Customer not found."
+            }

@@ -59,4 +59,36 @@ properties:
       </types:input-event>
     </types:processor-declaration>
   </types:enrichment>
+  <types:enrichment select="#fa7a1670-a4bb-4734-a53f-944d7e0012a7">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="customer[]"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#72747e0a-cf4c-4c34-976a-f0e4320fabdd">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="customer"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#5af8791c-1c27-426d-8dd8-4c228c836f34">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="customer"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="customer"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
 </types:mule>
