@@ -48,17 +48,6 @@ properties:
       </types:input-event>
     </types:processor-declaration>
   </types:enrichment>
-  <types:enrichment select="#0db19b40-7e3a-4d37-9d75-9a6590067a62">
-    <types:processor-declaration>
-      <types:input-event>
-        <types:variables>
-          <types:variable name="lastName" type="lastName"/>
-          <types:variable name="firstName" type="firstName"/>
-          <types:variable name="address" type="address"/>
-        </types:variables>
-      </types:input-event>
-    </types:processor-declaration>
-  </types:enrichment>
   <types:enrichment select="#fa7a1670-a4bb-4734-a53f-944d7e0012a7">
     <types:processor-declaration>
       <types:input-event>
@@ -83,6 +72,20 @@ properties:
         <types:message>
           <types:payload type="customer"/>
         </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="customer"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#fe17ea4b-c377-4f8d-8fd3-3165c604e9d8">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:variables>
+          <types:variable name="lastName" type="lastName"/>
+        </types:variables>
       </types:input-event>
       <types:output-event>
         <types:message>

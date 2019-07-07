@@ -162,16 +162,18 @@ output application/json
 			<db:sql >delete from customer_table where customer_id=:id</db:sql>
 			<db:input-parameters ><![CDATA[#[{'id' : attributes.uriParams.id}]]]></db:input-parameters>
 		</db:delete>
-		<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="53768f56-b93c-4a20-b931-02505a0325ea">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
+		<ee:transform doc:name="Transform Message" doc:id="c279fec3-31d5-40c9-81e7-10ebbbff8196" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-payload]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+{
+	"message" : "Customer deleted successfully."
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
     </flow>
-    <flow name="get:\records\customers:records-api-config">
+	<flow name="get:\records\customers:records-api-config">
         <http:listener doc:name="Get Customer Listener" doc:id="5880f255-2683-4f7b-b68a-aef49418cc19" config-ref="records-api-httpListenerConfig" path="/records/customers" allowedMethods="GET">
 			<http:response statusCode="200" />
 		</http:listener>
@@ -227,18 +229,21 @@ output application/json
 			<db:sql >INSERT INTO customer_table (first_name, last_name, address) VALUES (:firstName, :lastName, :address); </db:sql>
 			<db:input-parameters ><![CDATA[#[{'firstName' : vars.firstName, 'lastName' : vars.lastName, 'address' : vars.address}]]]></db:input-parameters>
 		</db:insert>
-		<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="0db19b40-7e3a-4d37-9d75-9a6590067a62">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
+		<db:select doc:name="Select latest id" doc:id="076cb2b0-31eb-43ba-89f9-f97cb1a303c2" config-ref="Database_Config">
+			<db:sql >select customer_id from customer_table order by customer_id desc limit 1;</db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="fe17ea4b-c377-4f8d-8fd3-3165c604e9d8" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
 {
-	id: payload.generatedKeys as String default "",
-	firstName: vars.firstName,
+	id: payload[0].customer_id as String,
+	firstName: vars.firstName as String,
 	lastName: vars.lastName,
-	address: vars.address
+	address: vars.address as String
 }]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+			</ee:message>
+		</ee:transform>
     </flow>
 </mule>
