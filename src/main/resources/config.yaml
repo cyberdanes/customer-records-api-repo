@@ -1,0 +1,9 @@
+http:
+  port: "8081"
+
+db:
+  host: "sandeep119629.ckdony16ozs8.us-east-1.rds.amazonaws.com"
+  port: "3306"
+  username: "masteruser"
+  password: "masterpassword"
+  database: "customers"
