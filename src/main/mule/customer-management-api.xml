@@ -159,14 +159,6 @@ payload]]></ee:set-payload>
 	"id" : vars.id
 }]]]></http:uri-params>
 		</http:request>
-        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="b5c17806-5ffd-4ffc-baf5-5114ac04f586">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-payload]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
     </flow>
 	<flow name="get:\customers:customer-management-api-config">
         <http:listener doc:name="Get Customer Listener" doc:id="f9c7d8bd-bde1-4873-be5d-4df6add1564c" config-ref="customer-management-api-httpListenerConfig" path="/customers">
